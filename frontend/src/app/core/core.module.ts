@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {Logger} from './logger.service';
 import {ErrorService} from './error/error.service';
 import {ErrorComponent} from './error/error.component';
-import {NavigationComponent} from './navigation/navigation.component';
 import {RouterModule} from '@angular/router';
 import {PersonalBookmarksService} from './personal-bookmarks.service';
 import {UserDataService} from './user-data.service';
@@ -40,11 +39,9 @@ import { MarkdownService } from './markdown/markdown.service';
     RouterModule
   ],
   declarations: [
-    NavigationComponent,
     ErrorComponent
   ],
   exports: [
-    NavigationComponent,
     ErrorComponent
   ],
   providers: [

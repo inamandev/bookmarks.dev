@@ -7,7 +7,7 @@ import { allTags } from '../../core/model/all-tags.const.en';
 import { KeycloakService } from 'keycloak-angular';
 import { UserData } from '../../core/model/user-data';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { BookmarksSearchComponent } from '../search/bookmarks-search.component';
+import { BookmarksSearchComponent } from '../../shared/search/bookmarks-search.component';
 import { MatDialog, MatTabChangeEvent } from '@angular/material';
 import { environment } from '../../../environments/environment';
 import { UserInfoStore } from '../../core/user/user-info.store';

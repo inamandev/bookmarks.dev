@@ -8,7 +8,6 @@ import { HomepageComponent } from './bookmarks/homepage.component';
 import { PublicBookmarksStore } from './bookmarks/store/public-bookmarks-store.service';
 import { MatAutocompleteModule, MatSelectModule, MatTabsModule } from '@angular/material';
 import { PublicBookmarksService } from './bookmarks/public-bookmarks.service';
-import { BookmarksSearchComponent } from './search/bookmarks-search.component';
 import { HowtoComponent } from './howto/howto.component';
 import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
 import { TermsOfServiceComponent } from './terms/terms-of-service.component';
@@ -25,7 +24,6 @@ import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
     PrivacyPolicyComponent,
     TermsOfServiceComponent,
     HomepageComponent,
-    BookmarksSearchComponent,
     UserPublicProfileComponent,
     TagComponent
   ],

@@ -10,13 +10,13 @@ import { KeycloakService } from 'keycloak-angular';
 import { Search, UserData } from '../../core/model/user-data';
 import { MatAutocompleteSelectedEvent, MatDialog, MatDialogConfig } from '@angular/material';
 import { UserDataStore } from '../../core/user/userdata.store';
-import { PublicBookmarksService } from '../bookmarks/public-bookmarks.service';
+import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.service';
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
 import { environment } from '../../../environments/environment';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
-import { LoginRequiredDialogComponent } from '../../shared/login-required-dialog/login-required-dialog.component';
+import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
 import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 
