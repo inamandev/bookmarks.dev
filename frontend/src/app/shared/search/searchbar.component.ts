@@ -26,11 +26,11 @@ export interface SearchDomain {
 }
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+  selector: 'app-searchbar',
+  templateUrl: './searchbar.component.html',
+  styleUrls: ['./searchbar.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchbarComponent implements OnInit {
 
   @Input()
   context: string;

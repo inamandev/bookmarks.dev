@@ -17,7 +17,7 @@ import { TagFollowingBaseComponent } from './tag-following-base-component/tag-fo
 import { Markdown2HtmlPipe } from './markdown2html.pipe';
 import { BookmarksSearchComponent } from './search/bookmarks-search.component';
 import { NavigationComponent } from './navigation/navigation.component';
-import { SearchComponent } from './search/search.component';
+import { SearchbarComponent } from './search/searchbar.component';
 
 
 /**
@@ -48,7 +48,7 @@ import { SearchComponent } from './search/search.component';
     PlayYoutubeVideoDialogComponent,
     TagFollowingBaseComponent,
     BookmarksSearchComponent,
-    SearchComponent,
+    SearchbarComponent,
     NavigationComponent
   ],
   exports: [
@@ -63,7 +63,7 @@ import { SearchComponent } from './search/search.component';
     MatProgressSpinnerModule,
     NavigationComponent,
     BookmarksSearchComponent,
-    SearchComponent,
+    SearchbarComponent,
   ],
   entryComponents: [
     DeleteBookmarkDialogComponent,
