@@ -187,12 +187,8 @@ export class SearchbarComponent implements OnInit {
   private watchSearchBoxValueChanges() {
     this.searchControl.valueChanges.subscribe(val => {
       this.searchText = val;
-      this.showNotFound = false;
-
-      if (val.trim() === '') {
-        this.showSearchResults = false;
-      }
-      this.syncQueryParamsWithSearchBox();
+      // TODO remove this
+      // this.syncQueryParamsWithSearchBox();
     });
   }
 
@@ -202,10 +198,10 @@ export class SearchbarComponent implements OnInit {
     }
   }
 
-  onSearchDomainChange(newValue) {
-    this.setFilteredSearches$(newValue);
+  onSearchDomainChange(selectedSearchDomain) {
+    this.setFilteredSearches$(selectedSearchDomain);
 
-    if ((newValue === 'personal' || newValue === 'my-codelets') && !this.userIsLoggedIn) {
+    if ((selectedSearchDomain === 'personal' || selectedSearchDomain === 'my-codelets') && !this.userIsLoggedIn) {
       this.searchDomain = 'public';
       const dialogConfig = new MatDialogConfig();
 
@@ -217,8 +213,9 @@ export class SearchbarComponent implements OnInit {
 
       const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this.searchDomain = newValue;
-      this.syncQueryParamsWithSearchBox();
+      this.searchDomain = selectedSearchDomain;
+      // TODO - remove next line
+      // this.syncQueryParamsWithSearchBox();
       if (this.searchText && this.searchText !== '') {
         this.searchBookmarks(this.searchText);
       }
@@ -226,24 +223,37 @@ export class SearchbarComponent implements OnInit {
   }
 
   onSaveSearchClick() {
-    const now = new Date();
-    const newSearch: Search = {
-      text: this.searchText,
-      createdAt: now,
-      lastAccessedAt: now,
-      searchDomain: this.searchDomain,
-      count: 1
-    }
-    const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
-    if (emptyUserData) {
-      this._userData = {
-        userId: this.userId,
-        searches: [newSearch]
-      }
+    if (!this.userIsLoggedIn) {
+      const dialogConfig = new MatDialogConfig();
+
+      dialogConfig.disableClose = true;
+      dialogConfig.autoFocus = true;
+      dialogConfig.data = {
+        message: 'You need to be logged in to save searches'
+      };
+
+      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
     } else {
-      this._userData.searches.unshift(newSearch);
+      const now = new Date();
+      const newSearch: Search = {
+        text: this.searchText,
+        createdAt: now,
+        lastAccessedAt: now,
+        searchDomain: this.searchDomain,
+        count: 1
+      }
+      const emptyUserData = Object.keys(this._userData).length === 0 && this._userData.constructor === Object;
+      if (emptyUserData) {
+        this._userData = {
+          userId: this.userId,
+          searches: [newSearch]
+        }
+      } else {
+        this._userData.searches = this._userData.searches.filter(item => item.text.trim().toLowerCase() !== this.searchText.trim().toLowerCase());
+        this._userData.searches.unshift(newSearch);
+      }
+      this.userDataStore.updateUserData$(this._userData).subscribe();
     }
-    this.userDataStore.updateUserData$(this._userData).subscribe();
   }
 
   onAutocompleteSelectionChanged(event: MatAutocompleteSelectedEvent) {
@@ -273,40 +283,22 @@ export class SearchbarComponent implements OnInit {
   searchBookmarksFromSearchBox(searchText: string) {
     this.currentPage = 1;
     this.searchBookmarks(searchText);
-    this.syncQueryParamsWithSearchBox();
+    // this.syncQueryParamsWithSearchBox();
   }
 
   searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
-      this.searchNotificationService.triggerSearch(
-        {
-          searchText: this.searchText,
-          searchDomain: this.searchDomain,
-          userId: this.userId
-        });
       this.router.navigate(['./search-results'],
         {
-          queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
-        });
-
-      /*      this.router.navigateByUrl('./search-results',
-              {
-                queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
-              });*/
-      /*      if (this.searchDomain === 'personal' && this.userId) {
-              this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
-              this.showSearchResults = true;
-              this.searchTriggered.emit(true);
-              this.searchNotificationService.triggerSearch({searchText: this.searchText, searchDomain: this.searchDomain});
-            } else if (this.searchDomain === 'my-codelets' && this.userId) {
-              this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
-              this.showSearchResults = true;
-              this.searchTriggered.emit(true);
-            } else {
-              this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
-              this.showSearchResults = true;
-              this.searchTriggered.emit(true);
-            }*/
+          queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
+        }).then(() => {
+        this.searchNotificationService.triggerSearch(
+          {
+            searchText: this.searchText,
+            searchDomain: this.searchDomain,
+            userId: this.userId
+          });
+      });
     }
 
   }
@@ -343,5 +335,9 @@ export class SearchbarComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  onClearClick() {
+    this.searchControl.setValue('');
   }
 }

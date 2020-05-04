@@ -91,7 +91,7 @@ export class SearchResultsComponent implements OnInit {
           break;
         }
         case 'public': {
-          this.searchPublicBookmarks(this.searchText);
+          this.searchPublicBookmarks(searchData.searchText);
           break;
         }
       }
@@ -106,6 +106,7 @@ export class SearchResultsComponent implements OnInit {
 
   private searchPublicBookmarks(searchText: string) {
     this.searchDomain = 'public';
+    this.searchText = searchText;
     this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(
       searchText, environment.PAGINATION_PAGE_SIZE, 1, 'relevant'
     );
@@ -113,6 +114,7 @@ export class SearchResultsComponent implements OnInit {
 
   private searchMyCodelets(searchText: string) {
     this.searchDomain = 'my-codelets';
+    this.searchText = searchText;
     this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
       searchText,
       environment.PAGINATION_PAGE_SIZE,
@@ -122,6 +124,7 @@ export class SearchResultsComponent implements OnInit {
 
   private searchPersonalBookmarks(searchText: string) {
     this.searchDomain = 'personal';
+    this.searchText = searchText;
     this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
       this.searchText,
       environment.PAGINATION_PAGE_SIZE,
