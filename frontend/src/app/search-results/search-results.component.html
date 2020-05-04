@@ -41,14 +41,15 @@
   ?
 </div>
 
-<app-async-bookmark-list *ngIf="searchDomain !== 'my-codelets'; else showCodeletResults"
-                         [bookmarks$]="searchResults$"
-                         [queryText]="searchText"
->
+<app-async-codelet-list *ngIf="searchDomain === 'my-codelets'; else showRegularBookmarksResults"
+  [codelets$]="searchResults$"
+  [queryText]="searchText">
+</app-async-codelet-list>
 
-</app-async-bookmark-list>
-<ng-template #showCodeletResults>
-  <app-async-codelet-list [codelets$]="searchResults$"
-                          [queryText]="searchText">
-  </app-async-codelet-list>
+<ng-template #showRegularBookmarksResults>
+  <app-async-bookmark-list
+    [bookmarks$]="searchResults$"
+    [queryText]="searchText"
+  >
+  </app-async-bookmark-list>
 </ng-template>

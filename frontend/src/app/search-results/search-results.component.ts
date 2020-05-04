@@ -48,21 +48,12 @@ export class SearchResultsComponent implements OnInit {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
           this.userId = userInfo.sub;
-
-          if (!this.searchDomain) {
-            if (!this.searchText) {
-              this.searchDomain = 'personal'; // without q param we are preparing to look in personal bookmarks
-            } else {
-              this.searchDomain = 'public';
-            }
-          } else if (this.searchText) {
-            if (this.searchDomain === 'personal') {
-              this.searchPersonalBookmarks();
-            } else if (this.searchDomain === 'my-codelets') {
-              this.searchMyCodelets();
-            } else {
-              this.searchPublicBookmarks();
-            }
+          if (this.searchDomain === 'personal') {
+            this.searchPersonalBookmarks(this.searchText);
+          } else if (this.searchDomain === 'my-codelets') {
+            this.searchMyCodelets(this.searchText);
+          } else {
+            this.searchPublicBookmarks(this.searchText);
           }
         });
       } else {
@@ -77,23 +68,41 @@ export class SearchResultsComponent implements OnInit {
           }
           default: {
             this.searchDomain = 'public';
+            this.searchPublicBookmarks(this.searchText);
             break;
           }
         }
-        if (this.searchText) {
-          this.searchPublicBookmarks();
+      }
+    });
+
+    this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
+      switch (searchData.searchDomain) {
+        case 'personal': {
+          this.searchDomain = searchData.searchDomain;
+          this.searchPersonalBookmarks(searchData.searchText);
+          break;
+        }
+        case 'my-codelets': {
+          this.searchDomain = searchData.searchDomain;
+          this.searchMyCodelets(searchData.searchText);
+          break;
+        }
+        case 'public': {
+          this.searchDomain = searchData.searchDomain;
+          this.searchPublicBookmarks(this.searchText);
+          break;
         }
       }
     });
   }
 
-  private searchPublicBookmarks() {
+  private searchPublicBookmarks(searchText: string) {
     this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(
       this.searchText, environment.PAGINATION_PAGE_SIZE, 1, 'relevant'
     );
   }
 
-  private searchMyCodelets() {
+  private searchMyCodelets(searchText: string) {
     this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
       this.searchText,
       environment.PAGINATION_PAGE_SIZE,
@@ -101,7 +110,7 @@ export class SearchResultsComponent implements OnInit {
       this.userId);
   }
 
-  private searchPersonalBookmarks() {
+  private searchPersonalBookmarks(searchText: string) {
     this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
       this.searchText,
       environment.PAGINATION_PAGE_SIZE,
@@ -120,7 +129,7 @@ export class SearchResultsComponent implements OnInit {
         queryParamsHandling: 'merge'
       }
     );
-    this.searchMyCodelets();
+    this.searchMyCodelets(this.searchText);
   }
 
   private tryPublicBookmarks() {
@@ -134,7 +143,7 @@ export class SearchResultsComponent implements OnInit {
         queryParamsHandling: 'merge'
       }
     );
-    this.searchPublicBookmarks();
+    this.searchPublicBookmarks(this.searchText);
   }
 
   private tryPersonalBookmarks() {
@@ -148,7 +157,7 @@ export class SearchResultsComponent implements OnInit {
         queryParamsHandling: 'merge'
       }
     );
-    this.searchPersonalBookmarks();
+    this.searchPersonalBookmarks(this.searchText);
   }
 
 }

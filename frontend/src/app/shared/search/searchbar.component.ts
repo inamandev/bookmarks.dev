@@ -288,6 +288,11 @@ export class SearchbarComponent implements OnInit {
         {
           queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
         });
+
+      /*      this.router.navigateByUrl('./search-results',
+              {
+                queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
+              });*/
       /*      if (this.searchDomain === 'personal' && this.userId) {
               this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
               this.showSearchResults = true;
