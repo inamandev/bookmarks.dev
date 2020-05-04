@@ -11,6 +11,8 @@ import { SearchNotificationService } from '../core/search-notification.service';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakServiceWrapper } from '../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../core/user/user-info.store';
+import { UserDataStore } from '../core/user/userdata.store';
+import { UserData } from '../core/model/user-data';
 
 @Component({
   selector: 'app-search-results',
@@ -26,6 +28,7 @@ export class SearchResultsComponent implements OnInit {
   userIsLoggedIn = false;
 
   searchResults$: Observable<Bookmark[] | Codelet[]>;
+  private userData$: Observable<UserData>;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -35,6 +38,7 @@ export class SearchResultsComponent implements OnInit {
               private keycloakService: KeycloakService,
               private keycloakServiceWrapper: KeycloakServiceWrapper,
               private userInfoStore: UserInfoStore,
+              private userDataStore: UserDataStore,
               private searchNotificationService: SearchNotificationService) {
   }
 
@@ -47,6 +51,7 @@ export class SearchResultsComponent implements OnInit {
       if (isLoggedIn) {
         this.userIsLoggedIn = true;
         this.userInfoStore.getUserInfo$().subscribe(userInfo => {
+          this.userData$ = this.userDataStore.getUserData$();
           this.userId = userInfo.sub;
           if (this.searchDomain === 'personal') {
             this.searchPersonalBookmarks(this.searchText);
