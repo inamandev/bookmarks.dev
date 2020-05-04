@@ -1,7 +1,51 @@
+<h2>Searching for <em>"{{searchText}}"</em> in <em>"{{searchDomain}}"</em></h2>
+<hr>
+<div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+     class="alert alert-info no-search-results"
+     role="alert">
+  No <strong>{{searchDomain}}</strong> bookmarks found for
+  "<em>{{searchText}}</em>".
+  Did you mean to look into
+  <span *ngIf="searchDomain === 'personal'">
+          <button class="btn btn-outline-primary btn-sm"
+                  (click)="tryPublicBookmarks()">
+            <i class="fa fa-search"></i> public bookmarks
+          </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
+            <i class="fa fa-search"></i> my codelets
+          </button>
+        </span>
+
+  <span *ngIf="searchDomain === 'public'">
+          <button class="btn btn-outline-primary btn-sm"
+                  (click)="tryPersonalBookmarks()">
+            <i class="fa fa-search"></i> personal bookmarks
+          </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
+            <i class="fa fa-search"></i> my codelets
+          </button>
+        </span>
+
+  <span *ngIf="searchDomain === 'my-codelets'">
+          <button class="btn btn-outline-primary btn-sm"
+                  (click)="tryPersonalBookmarks()">
+            <i class="fa fa-search"></i> personal bookmarks
+          </button>
+          or
+          <button class="btn btn-outline-primary btn-sm" (click)="tryPublicBookmarks()">
+            <i class="fa fa-search"></i> public bookmarks
+          </button>
+        </span>
+  ?
+</div>
+
 <app-async-bookmark-list *ngIf="searchDomain !== 'my-codelets'; else showCodeletResults"
                          [bookmarks$]="searchResults$"
                          [queryText]="searchText"
-                         >
+>
+
 </app-async-bookmark-list>
 <ng-template #showCodeletResults>
   <app-async-codelet-list [codelets$]="searchResults$"
