@@ -66,29 +66,26 @@ export class SearchResultsComponent implements OnInit {
             this.keycloakServiceWrapper.login();
             break;
           }
-          default: {
-            this.searchDomain = 'public';
+          case 'public': {
             this.searchPublicBookmarks(this.searchText);
             break;
           }
         }
+        this.searchPublicBookmarks_when_SearchText_but_No_SearchDomain();
       }
     });
 
     this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
       switch (searchData.searchDomain) {
         case 'personal': {
-          this.searchDomain = searchData.searchDomain;
           this.searchPersonalBookmarks(searchData.searchText);
           break;
         }
         case 'my-codelets': {
-          this.searchDomain = searchData.searchDomain;
           this.searchMyCodelets(searchData.searchText);
           break;
         }
         case 'public': {
-          this.searchDomain = searchData.searchDomain;
           this.searchPublicBookmarks(this.searchText);
           break;
         }
@@ -96,21 +93,30 @@ export class SearchResultsComponent implements OnInit {
     });
   }
 
+  private searchPublicBookmarks_when_SearchText_but_No_SearchDomain() {
+    if (this.searchText) {
+      this.searchPublicBookmarks(this.searchText);
+    }
+  }
+
   private searchPublicBookmarks(searchText: string) {
+    this.searchDomain = 'public';
     this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(
-      this.searchText, environment.PAGINATION_PAGE_SIZE, 1, 'relevant'
+      searchText, environment.PAGINATION_PAGE_SIZE, 1, 'relevant'
     );
   }
 
   private searchMyCodelets(searchText: string) {
+    this.searchDomain = 'my-codelets';
     this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
-      this.searchText,
+      searchText,
       environment.PAGINATION_PAGE_SIZE,
       1,
       this.userId);
   }
 
   private searchPersonalBookmarks(searchText: string) {
+    this.searchDomain = 'personal';
     this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
       this.searchText,
       environment.PAGINATION_PAGE_SIZE,
@@ -119,7 +125,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private tryMyCodelets() {
-    this.searchDomain = 'my-codelets';
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
@@ -133,7 +138,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private tryPublicBookmarks() {
-    this.searchDomain = 'public';
     this.router.navigate(['.'],
       {
         relativeTo: this.route,

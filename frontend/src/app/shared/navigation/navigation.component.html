@@ -120,7 +120,7 @@
           <div class="dropdown-divider"></div>
           <span class="dropdown-item-text">
             {{(userInfoOidc$ | async).name}}</span>
-          <span class="navbar-text dropdown-item-text">{{(userInfoOidc$ | async).email}}</span>
+          <span class="dropdown-item-text">{{(userInfoOidc$ | async).email}}</span>
 
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#" (click)="doLogout()">Sign out</a>
