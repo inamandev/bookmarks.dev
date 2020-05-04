@@ -25,6 +25,7 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { FeedStore } from './user/feed-store.service';
 import { PersonalCodeletsService } from './personal-codelets.service';
 import { MarkdownService } from './markdown/markdown.service';
+import { SearchNotificationService } from './search-notification.service';
 
 
 /**
@@ -67,7 +68,8 @@ import { MarkdownService } from './markdown/markdown.service';
     WebpageInfoService,
     LoaderService,
     KeycloakServiceWrapper,
-    MarkdownService
+    MarkdownService,
+    SearchNotificationService
   ]
 })
 export class CoreModule {

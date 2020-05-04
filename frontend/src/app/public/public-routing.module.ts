@@ -10,7 +10,7 @@ import { UserPublicProfileComponent } from './user-public-profile/user-public-pr
 import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
 
 export function tagMatcher(url: UrlSegment[]) {
-    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings' ? ({consumed: url}) : null;
+    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings'  && url[0].path !== 'search-results' ? ({consumed: url}) : null;
 }
 
 const publicBookmarksRoutes: Routes = [

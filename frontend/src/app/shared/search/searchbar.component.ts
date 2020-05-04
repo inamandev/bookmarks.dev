@@ -19,6 +19,7 @@ import { PaginationNotificationService } from '../../core/pagination-notificatio
 import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
 import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
+import { SearchNotificationService } from '../../core/search-notification.service';
 
 export interface SearchDomain {
   value: string;
@@ -73,6 +74,7 @@ export class SearchbarComponent implements OnInit {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
+              private searchNotificationService: SearchNotificationService,
               private bookmarkStore: PublicBookmarksStore,
               private publicBookmarksService: PublicBookmarksService,
               private personalBookmarksService: PersonalBookmarksService,
@@ -276,19 +278,30 @@ export class SearchbarComponent implements OnInit {
 
   searchBookmarks(searchText: string) {
     if (searchText.trim() !== '') {
-      if (this.searchDomain === 'personal' && this.userId) {
-        this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
-        this.showSearchResults = true;
-        this.searchTriggered.emit(true);
-      } else if (this.searchDomain === 'my-codelets' && this.userId) {
-        this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
-        this.showSearchResults = true;
-        this.searchTriggered.emit(true);
-      } else {
-        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
-        this.showSearchResults = true;
-        this.searchTriggered.emit(true);
-      }
+      this.searchNotificationService.triggerSearch(
+        {
+          searchText: this.searchText,
+          searchDomain: this.searchDomain,
+          userId: this.userId
+        });
+      this.router.navigate(['./search-results'],
+        {
+          queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage, userId: this.userId}
+        });
+      /*      if (this.searchDomain === 'personal' && this.userId) {
+              this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
+              this.showSearchResults = true;
+              this.searchTriggered.emit(true);
+              this.searchNotificationService.triggerSearch({searchText: this.searchText, searchDomain: this.searchDomain});
+            } else if (this.searchDomain === 'my-codelets' && this.userId) {
+              this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, this.userId);
+              this.showSearchResults = true;
+              this.searchTriggered.emit(true);
+            } else {
+              this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
+              this.showSearchResults = true;
+              this.searchTriggered.emit(true);
+            }*/
     }
 
   }

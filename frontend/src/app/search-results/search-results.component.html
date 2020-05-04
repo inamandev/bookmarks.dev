@@ -1,0 +1,10 @@
+<app-async-bookmark-list *ngIf="searchDomain !== 'my-codelets'; else showCodeletResults"
+                         [bookmarks$]="searchResults$"
+                         [queryText]="searchText"
+                         >
+</app-async-bookmark-list>
+<ng-template #showCodeletResults>
+  <app-async-codelet-list [codelets$]="searchResults$"
+                          [queryText]="searchText">
+  </app-async-codelet-list>
+</ng-template>
