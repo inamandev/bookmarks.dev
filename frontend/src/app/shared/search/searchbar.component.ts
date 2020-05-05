@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { map, startWith } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
@@ -138,11 +138,11 @@ export class SearchbarComponent implements OnInit {
             } else {
               this.searchDomain = 'public';
               this.searchControl.setValue(this.searchText);
-              this.searchBookmarks(this.searchText);
+              this.triggerBookmarkSearch(this.searchText);
             }
           } else if (this.searchText) {
             this.searchControl.setValue(this.searchText);
-            this.searchBookmarks(this.searchText);
+            this.triggerBookmarkSearch(this.searchText);
           }
         });
       } else {
@@ -162,7 +162,7 @@ export class SearchbarComponent implements OnInit {
         }
         if (this.searchText) {
           this.searchControl.setValue(this.searchText);
-          this.searchBookmarks(this.searchText);
+          this.triggerBookmarkSearch(this.searchText);
         }
       }
     });
@@ -179,7 +179,7 @@ export class SearchbarComponent implements OnInit {
     this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
       if (paginationAction.caller === this.callerPaginationSearchResults) {
         this.currentPage = paginationAction.page;
-        this.searchBookmarks(this.searchText);
+        this.triggerBookmarkSearch(this.searchText);
       }
     })
   }
@@ -203,36 +203,32 @@ export class SearchbarComponent implements OnInit {
 
     if ((selectedSearchDomain === 'personal' || selectedSearchDomain === 'my-codelets') && !this.userIsLoggedIn) {
       this.searchDomain = 'public';
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to search in your personal bookmarks'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
     } else {
       this.searchDomain = selectedSearchDomain;
       // TODO - remove next line
       // this.syncQueryParamsWithSearchBox();
       if (this.searchText && this.searchText !== '') {
-        this.searchBookmarks(this.searchText);
+        this.triggerBookmarkSearch(this.searchText);
       }
     }
   }
 
+  private showLoginRequiredDialog(message: string) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      message: message
+    };
+
+    const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+  }
+
   onSaveSearchClick() {
     if (!this.userIsLoggedIn) {
-      const dialogConfig = new MatDialogConfig();
-
-      dialogConfig.disableClose = true;
-      dialogConfig.autoFocus = true;
-      dialogConfig.data = {
-        message: 'You need to be logged in to save searches'
-      };
-
-      const dialogRef = this.loginDialog.open(LoginRequiredDialogComponent, dialogConfig);
+      this.showLoginRequiredDialog('You need to be logged in to save searches')
     } else {
       const now = new Date();
       const newSearch: Search = {
@@ -269,7 +265,7 @@ export class SearchbarComponent implements OnInit {
     this._userData.searches.unshift(updatedSearch);
 
     this.userDataStore.updateUserData$(this._userData).subscribe();
-    this.searchBookmarks(selectedValue);
+    this.triggerBookmarkSearch(selectedValue);
   }
 
   focusOnSearchControl() {
@@ -282,11 +278,11 @@ export class SearchbarComponent implements OnInit {
 
   searchBookmarksFromSearchBox(searchText: string) {
     this.currentPage = 1;
-    this.searchBookmarks(searchText);
+    this.triggerBookmarkSearch(searchText);
     // this.syncQueryParamsWithSearchBox();
   }
 
-  searchBookmarks(searchText: string) {
+  triggerBookmarkSearch(searchText: string) {
     if (searchText.trim() !== '') {
       this.router.navigate(['./search-results'],
         {
