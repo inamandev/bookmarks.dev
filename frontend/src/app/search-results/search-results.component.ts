@@ -44,8 +44,11 @@ export class SearchResultsComponent implements OnInit {
 
   ngOnInit() {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
-    this.searchDomain = this.route.snapshot.queryParamMap.get('sd');
-    this.userId = this.route.snapshot.queryParamMap.get('userId');
+    this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || 'public';
+    this.searchNotificationService.updateSearchBar({
+      searchText: this.searchText,
+      searchDomain: this.searchDomain
+    });
 
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
       if (isLoggedIn) {

@@ -5,7 +5,7 @@
             (mouseleave)="hover=false"
             [class.focused]="(isFocusOnSearchControl || hover) && publicSearchBox.value"
             (click)="onSearchDomainChange(searchDomain)"
-            [disabled]="!searchText"
+            [disabled]="!searchBoxText"
             class="btn btn-outline-secondary"
             title="Search"
     >
@@ -51,7 +51,7 @@
   <div class="input-group-append">
     <button *ngIf="publicSearchBox.value" class="btn btn-sm btn-outline-secondary"
             type="button"
-            (click)="onClearClick()"
+            (click)="clearSearchBoxText()"
             title="Clear"
     ><i class="fas fa-lg fa-times"></i>
     </button>
@@ -59,7 +59,7 @@
             type="button"
             (click)="onSaveSearchClick()"
             title="{{userIsLoggedIn ? 'Save search' : 'Login to save search'}}"
-            [disabled]="!searchText"
+            [disabled]="!searchBoxText"
     ><i class="fas fa-save"></i>
     </button>
   </div>

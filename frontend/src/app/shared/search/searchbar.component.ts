@@ -14,7 +14,6 @@ import { PublicBookmarksService } from '../../public/bookmarks/public-bookmarks.
 import { PersonalBookmarksService } from '../../core/personal-bookmarks.service';
 import { KeycloakServiceWrapper } from '../../core/keycloak-service-wrapper.service';
 import { UserInfoStore } from '../../core/user/user-info.store';
-import { environment } from '../../../environments/environment';
 import { PaginationNotificationService } from '../../core/pagination-notification.service';
 import { LoginRequiredDialogComponent } from '../login-required-dialog/login-required-dialog.component';
 import { Codelet } from '../../core/model/codelet';
@@ -47,7 +46,7 @@ export class SearchbarComponent implements OnInit {
   searchResults$: Observable<Bookmark[] | Codelet[]>;
 
   searchControl = new FormControl();
-  searchText: string; // holds the value in the search box
+  searchBoxText: string; // holds the value in the search box
   public showNotFound = false;
 
   userIsLoggedIn = false;
@@ -103,7 +102,6 @@ export class SearchbarComponent implements OnInit {
           }
         });
     }
-
   }
 
   private setFilteredSearches$(searchDomain: string) {
@@ -123,78 +121,57 @@ export class SearchbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchText = this.route.snapshot.queryParamMap.get('q');
-    this.searchDomain = this.route.snapshot.queryParamMap.get('sd');
-
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      if (isLoggedIn) {
-        this.userIsLoggedIn = true;
-        this.userInfoStore.getUserInfo$().subscribe(userInfo => {
-          this.userId = userInfo.sub;
-
-          if (!this.searchDomain) {
-            if (!this.searchText) {
-              this.searchDomain = 'personal'; // without q param we are preparing to look in personal bookmarks
-            } else {
-              this.searchDomain = 'public';
-              this.searchControl.setValue(this.searchText);
-              this.triggerBookmarkSearch(this.searchText);
-            }
-          } else if (this.searchText) {
-            this.searchControl.setValue(this.searchText);
-            this.triggerBookmarkSearch(this.searchText);
-          }
-        });
-      } else {
-        switch (this.searchDomain) {
-          case 'personal': {
-            this.keycloakServiceWrapper.login();
-            break;
-          }
-          case 'my-codelets': {
-            this.keycloakServiceWrapper.login();
-            break;
-          }
-          default: {
-            this.searchDomain = 'public';
-            break;
-          }
-        }
-        if (this.searchText) {
-          this.searchControl.setValue(this.searchText);
-          this.triggerBookmarkSearch(this.searchText);
-        }
-      }
+      this.userIsLoggedIn = true;
     });
 
+    this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(searchData => {
+      this.searchDomain = searchData.searchDomain;
+      this.searchControl.setValue(searchData.searchText);
+    });
+
+    // TODO - remove this
     this.watchSearchBoxValueChanges();
 
-    const page = this.route.snapshot.queryParamMap.get('page');
-    if (page) {
-      this.currentPage = parseInt(page, 0);
-    } else {
-      this.currentPage = 1;
-    }
+    /* TODO move this to search-results page
+      const page = this.route.snapshot.queryParamMap.get('page');
+        if (page) {
+          this.currentPage = parseInt(page, 0);
+        } else {
+          this.currentPage = 1;
+        }
 
-    this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-      if (paginationAction.caller === this.callerPaginationSearchResults) {
-        this.currentPage = paginationAction.page;
-        this.triggerBookmarkSearch(this.searchText);
-      }
-    })
+        this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
+          if (paginationAction.caller === this.callerPaginationSearchResults) {
+            this.currentPage = paginationAction.page;
+            this.triggerBookmarkSearch(this.searchBoxText);
+          }
+        })
+        */
+
   }
 
   private watchSearchBoxValueChanges() {
     this.searchControl.valueChanges.subscribe(val => {
-      this.searchText = val;
+      this.searchBoxText = val;
       // TODO remove this
       // this.syncQueryParamsWithSearchBox();
     });
   }
 
+  /*
+   This was used here homepage.component.html
+
+         <app-async-bookmark-list *ngIf="searchComponent.searchDomain !== 'my-codelets'; else showCodeletResults"
+                               [bookmarks$]="searchComponent.searchResults$"
+                               [queryText]="searchComponent.searchBoxText"
+                               [userData$]="userData$"
+                               [callerPagination]="searchComponent.callerPaginationSearchResults"
+                               (bookmarkDeleted)="searchComponent.onBookmarkDeleted($event)">
+   */
   onBookmarkDeleted(deleted: boolean) {
     if (deleted) {
-      this.searchControl.setValue(this.searchText);
+      this.searchControl.setValue(this.searchBoxText);
     }
   }
 
@@ -208,8 +185,8 @@ export class SearchbarComponent implements OnInit {
       this.searchDomain = selectedSearchDomain;
       // TODO - remove next line
       // this.syncQueryParamsWithSearchBox();
-      if (this.searchText && this.searchText !== '') {
-        this.triggerBookmarkSearch(this.searchText);
+      if (this.searchBoxText && this.searchBoxText !== '') {
+        this.triggerBookmarkSearch(this.searchBoxText);
       }
     }
   }
@@ -232,7 +209,7 @@ export class SearchbarComponent implements OnInit {
     } else {
       const now = new Date();
       const newSearch: Search = {
-        text: this.searchText,
+        text: this.searchBoxText,
         createdAt: now,
         lastAccessedAt: now,
         searchDomain: this.searchDomain,
@@ -245,7 +222,7 @@ export class SearchbarComponent implements OnInit {
           searches: [newSearch]
         }
       } else {
-        this._userData.searches = this._userData.searches.filter(item => item.text.trim().toLowerCase() !== this.searchText.trim().toLowerCase());
+        this._userData.searches = this._userData.searches.filter(item => item.text.trim().toLowerCase() !== this.searchBoxText.trim().toLowerCase());
         this._userData.searches.unshift(newSearch);
       }
       this.userDataStore.updateUserData$(this._userData).subscribe();
@@ -290,50 +267,37 @@ export class SearchbarComponent implements OnInit {
         }).then(() => {
         this.searchNotificationService.triggerSearch(
           {
-            searchText: this.searchText,
-            searchDomain: this.searchDomain,
-            userId: this.userId
+            searchText: this.searchBoxText,
+            searchDomain: this.searchDomain
           });
       });
     }
 
   }
 
-  syncQueryParamsWithSearchBox() {
-    if (this.searchText) {
-      this.router.navigate(['.'],
-        {
-          relativeTo: this.route,
-          queryParams: {q: this.searchText, sd: this.searchDomain, page: this.currentPage},
-          queryParamsHandling: 'merge'
-        }
-      );
-    } else {
-      this.searchTextCleared.emit(true);
-      this.router.navigate(['./'],
-        {
-          relativeTo: this.route,
-          queryParams: {q: null, sd: null, page: null},
-          queryParamsHandling: 'merge'
-        }
-      );
-    }
-  }
-
-  clearSearchText() {
-    this.searchControl.patchValue('');
-  }
-
-  searchAlreadySaved(autocompleteSearches: Search[], searchText: string) {
-    for (const search of autocompleteSearches) {
-      if (search.text.includes(searchText)) {
-        return true;
+  /* TODO - remove this
+    syncQueryParamsWithSearchBox() {
+      if (this.searchBoxText) {
+        this.router.navigate(['.'],
+          {
+            relativeTo: this.route,
+            queryParams: {q: this.searchBoxText, sd: this.searchDomain, page: this.currentPage},
+            queryParamsHandling: 'merge'
+          }
+        );
+      } else {
+        this.searchTextCleared.emit(true);
+        this.router.navigate(['./'],
+          {
+            relativeTo: this.route,
+            queryParams: {q: null, sd: null, page: null},
+            queryParamsHandling: 'merge'
+          }
+        );
       }
-    }
-    return false;
-  }
+    }*/
 
-  onClearClick() {
-    this.searchControl.setValue('');
+  clearSearchBoxText() {
+    this.searchControl.patchValue('');
   }
 }
