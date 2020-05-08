@@ -110,7 +110,7 @@ export class SearchResultsComponent implements OnInit {
   private searchPublicBookmarks(searchText: string) {
     this.searchDomain = 'public';
     this.searchText = searchText;
-    this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(
+    this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(
       searchText, environment.PAGINATION_PAGE_SIZE, 1, 'relevant'
     );
   }

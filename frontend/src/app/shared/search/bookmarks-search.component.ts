@@ -285,7 +285,7 @@ export class BookmarksSearchComponent implements OnInit {
         this.showSearchResults = true;
         this.searchTriggered.emit(true);
       } else {
-        this.searchResults$ = this.publicBookmarksService.getFilteredPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
+        this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant');
         this.showSearchResults = true;
         this.searchTriggered.emit(true);
       }
