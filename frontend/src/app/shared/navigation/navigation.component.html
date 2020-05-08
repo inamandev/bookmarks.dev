@@ -2,7 +2,8 @@
   <a class="navbar-brand" [routerLink]="['']" routerLinkActive="active">
     <div class="app-brand" (click)="onLogoClick()">
       <div>
-        <img src="assets/logo.png" width="50" height="50" class="d-inline-block align-middle logo-image" alt="Logo Bookmarks.dev">
+        <img src="assets/logo.png" width="50" height="50" class="d-inline-block align-middle logo-image"
+             alt="Logo Bookmarks.dev">
       </div>
       <div class="app-brand-text">
         <span>Bookmarks
@@ -23,41 +24,15 @@
   </ul>
   <div class="navbar-collapse collapse" id="collapsingNavbar">
     <ul class="navbar-nav">
-      <li class="nav-item fa-pull-left">
-        <div class="btn-group tag-list mt-1 mr-2">
-          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
-             title="New Bookmark">
-            <i class="fa fa-plus"></i>
-            New
-          </a>
-          <button
-            type=" button"
-            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <div class="dropdown-menu">
-            <a
-              class="dropdown-item"
-              routerLink="/personal/new">
-              <i class="fa fa-bookmark"></i>
-              Bookmark
-            </a>
-            <a
-              class="dropdown-item"
-              routerLink="/my-codelets/new">
-              <i class="fa fa-code"></i>
-              Codelet
-            </a>
-          </div>
-        </div>
+      <li class="nav-item" title="Fork me on Github">
+        <a class="nav-link" href="https://github.com/CodepediaOrg/bookmarks.dev#readme" target="_blank">
+          <i
+            class="fab fa-lg fa-github"></i>
+        </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-howTo" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fas fa-info-circle"></i>
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-howTo" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
           How To
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown-howTo">
@@ -88,11 +63,25 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" title="Fork me on Github">
-        <a class="nav-link" href="https://github.com/CodepediaOrg/bookmarks.dev#readme" target="_blank">
-          <i
-            class="fab fa-lg fa-github"></i>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown-new" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-lg fa-plus"></i>
         </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown-new">
+          <a
+            class="dropdown-item"
+            routerLink="/personal/new">
+            <i class="fa fa-bookmark"></i>
+            Bookmark
+          </a>
+          <a
+            class="dropdown-item"
+            routerLink="/my-codelets/new">
+            <i class="fa fa-code"></i>
+            Codelet
+          </a>
+        </div>
       </li>
       <li *ngIf="(userInfoOidc$ | async); else notLoggedIn" class="nav-item dropdown ml-auto">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
