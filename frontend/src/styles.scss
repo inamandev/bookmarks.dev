@@ -348,6 +348,10 @@ pre{
 .navbar {
   z-index: 1000;
 }
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 1);
+  font-weight: 500;
+}
 
 // END bootstrap override
 
