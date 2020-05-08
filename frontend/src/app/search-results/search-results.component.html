@@ -25,9 +25,10 @@
       </div>
       <ng-template #showPubliBookmarksResults>
         <app-async-bookmark-list *ngIf="this.searchDomain === 'public'"
-          [bookmarks$]="searchResults$"
-          [queryText]="searchText"
-          [userData$]="userData$">
+                                 [callerPagination]="callerPaginationSearchResults"
+                                 [bookmarks$]="searchResults$"
+                                 [queryText]="searchText"
+                                 [userData$]="userData$">
         </app-async-bookmark-list>
       </ng-template>
     </ng-template>
@@ -54,10 +55,10 @@
         ?
       </div>
       <app-async-bookmark-list *ngIf="this.searchDomain === 'personal'"
-        [bookmarks$]="searchResults$"
-        [queryText]="searchText"
-        [userData$]="userData$"
-      >
+                               [callerPagination]="callerPaginationSearchResults"
+                               [bookmarks$]="searchResults$"
+                               [queryText]="searchText"
+                               [userData$]="userData$">
       </app-async-bookmark-list>
     </ng-template>
   </mat-tab>
@@ -73,19 +74,19 @@
         "<em>{{searchText}}</em>".
         Try searching in
 
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPersonalBookmarks()">
-            <i class="fa fa-search"></i> personal bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryPublicBookmarks()">
-            <i class="fa fa-search"></i> public bookmarks
-          </button>
+        <button class="btn btn-outline-primary btn-sm"
+                (click)="tryPersonalBookmarks()">
+          <i class="fa fa-search"></i> personal bookmarks
+        </button>
+        or
+        <button class="btn btn-outline-primary btn-sm" (click)="tryPublicBookmarks()">
+          <i class="fa fa-search"></i> public bookmarks
+        </button>
         ?
       </div>
       <app-async-codelet-list *ngIf="this.searchDomain === 'my-codelets'"
-        [codelets$]="searchResults$"
-        [queryText]="searchText">
+                              [codelets$]="searchResults$"
+                              [queryText]="searchText">
       </app-async-codelet-list>
     </ng-template>
   </mat-tab>
