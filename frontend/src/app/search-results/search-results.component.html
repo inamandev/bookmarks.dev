@@ -1,34 +1,78 @@
-<h2>Searching for <em>"{{searchText}}"</em> in <em>"{{searchDomain}}"</em></h2>
-<hr>
-<div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
-     class="alert alert-info no-search-results"
-     role="alert">
-  No <strong>{{searchDomain}}</strong> bookmarks found for
-  "<em>{{searchText}}</em>".
-  Did you mean to look into
-  <span *ngIf="searchDomain === 'personal'">
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPublicBookmarks()">
-            <i class="fa fa-search"></i> public bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
-            <i class="fa fa-search"></i> my codelets
-          </button>
-        </span>
+<!--<h3>Results for <em>"{{searchText}}"</em></h3>
+<hr>-->
 
-  <span *ngIf="searchDomain === 'public'">
-          <button class="btn btn-outline-primary btn-sm"
-                  (click)="tryPersonalBookmarks()">
-            <i class="fa fa-search"></i> personal bookmarks
-          </button>
-          or
-          <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
-            <i class="fa fa-search"></i> my codelets
-          </button>
-        </span>
+<mat-tab-group [selectedIndex]="selectedTabIndex" (selectedTabChange)="tabSelectionChanged($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> Public Bookmarks</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1; else showPubliBookmarksResults"
+           class="alert alert-info no-search-results mt-2"
+           role="alert">
+        No <strong>{{searchDomain}}</strong> bookmarks found for
+        "<em>{{searchText}}</em>".
+        Try searching in
+        <button class="btn btn-outline-primary btn-sm"
+                (click)="tryPersonalBookmarks()">
+          <i class="fa fa-search"></i> personal bookmarks
+        </button>
+        or
+        <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
+          <i class="fa fa-search"></i> my codelets
+        </button>
+        ?
+      </div>
+      <ng-template #showPubliBookmarksResults>
+        <app-async-bookmark-list *ngIf="this.searchDomain === 'public'"
+          [bookmarks$]="searchResults$"
+          [queryText]="searchText"
+          [userData$]="userData$">
+        </app-async-bookmark-list>
+      </ng-template>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> My Bookmarks</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+           class="alert alert-info no-search-results mt-2"
+           role="alert">
+        No <strong>{{searchDomain}}</strong> bookmarks found for
+        "<em>{{searchText}}</em>".
+        Try searching in
+        <button class="btn btn-outline-primary btn-sm"
+                (click)="tryPublicBookmarks()">
+          <i class="fa fa-search"></i> public bookmarks
+        </button>
+        or
+        <button class="btn btn-outline-primary btn-sm" (click)="tryMyCodelets()">
+          <i class="fa fa-search"></i> my codelets
+        </button>
+        ?
+      </div>
+      <app-async-bookmark-list *ngIf="this.searchDomain === 'personal'"
+        [bookmarks$]="searchResults$"
+        [queryText]="searchText"
+        [userData$]="userData$"
+      >
+      </app-async-bookmark-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class="app-tab-label"><i class="fa fa-search"></i> My Codelets</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <div *ngIf="(searchResults$ | async)?.length === 0 && currentPage === 1"
+           class="alert alert-info no-search-results mt-2"
+           role="alert">
+        No <strong>{{searchDomain}}</strong> bookmarks found for
+        "<em>{{searchText}}</em>".
+        Try searching in
 
-  <span *ngIf="searchDomain === 'my-codelets'">
           <button class="btn btn-outline-primary btn-sm"
                   (click)="tryPersonalBookmarks()">
             <i class="fa fa-search"></i> personal bookmarks
@@ -37,20 +81,13 @@
           <button class="btn btn-outline-primary btn-sm" (click)="tryPublicBookmarks()">
             <i class="fa fa-search"></i> public bookmarks
           </button>
-        </span>
-  ?
-</div>
+        ?
+      </div>
+      <app-async-codelet-list *ngIf="this.searchDomain === 'my-codelets'"
+        [codelets$]="searchResults$"
+        [queryText]="searchText">
+      </app-async-codelet-list>
+    </ng-template>
+  </mat-tab>
 
-<app-async-codelet-list *ngIf="searchDomain === 'my-codelets'; else showRegularBookmarksResults"
-  [codelets$]="searchResults$"
-  [queryText]="searchText">
-</app-async-codelet-list>
-
-<ng-template #showRegularBookmarksResults>
-  <app-async-bookmark-list
-    [bookmarks$]="searchResults$"
-    [queryText]="searchText"
-    [userData$]="userData$"
-  >
-  </app-async-bookmark-list>
-</ng-template>
+</mat-tab-group>
