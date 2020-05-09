@@ -15,7 +15,6 @@ import { SocialButtonsModule } from '../social-buttons/social-buttons.module';
 import { PlayYoutubeVideoDialogComponent } from './play-youtube-video-dialog/play-youtube-video-dialog.component';
 import { TagFollowingBaseComponent } from './tag-following-base-component/tag-following-base.component';
 import { Markdown2HtmlPipe } from './markdown2html.pipe';
-import { BookmarksSearchComponent } from './search/bookmarks-search.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { SearchbarComponent } from './search/searchbar.component';
 
@@ -47,7 +46,6 @@ import { SearchbarComponent } from './search/searchbar.component';
     LoginRequiredDialogComponent,
     PlayYoutubeVideoDialogComponent,
     TagFollowingBaseComponent,
-    BookmarksSearchComponent,
     SearchbarComponent,
     NavigationComponent
   ],
@@ -62,7 +60,6 @@ import { SearchbarComponent } from './search/searchbar.component';
     BookmarkTextComponent,
     MatProgressSpinnerModule,
     NavigationComponent,
-    BookmarksSearchComponent,
     SearchbarComponent,
   ],
   entryComponents: [
