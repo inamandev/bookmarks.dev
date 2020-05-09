@@ -9,16 +9,7 @@ import {TermsOfServiceComponent} from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
 
-export function tagMatcher(url: UrlSegment[]) {
-    return url.length === 1 && url[0].path !== 'personal' && url[0].path !== 'dashboard' && url[0].path !== 'settings'  && url[0].path !== 'search-results' ? ({consumed: url}) : null;
-}
-
 const publicBookmarksRoutes: Routes = [
-  {
-    path: 'search',
-    redirectTo: '',
-    pathMatch: 'full'
-  },
   {
     path: 'history',
     redirectTo: '/?tab=history',
@@ -50,6 +41,10 @@ const publicBookmarksRoutes: Routes = [
   },
   {
     path: 'tags/:tag',
+    component: TagComponent
+  },
+  {
+    path: 't/:tag',
     component: TagComponent
   },
   {
@@ -88,8 +83,7 @@ const publicBookmarksRoutes: Routes = [
   {
     path: '',
     component: HomepageComponent
-  },
-  { matcher: tagMatcher, component: TagComponent }
+  }
 ];
 
 @NgModule({

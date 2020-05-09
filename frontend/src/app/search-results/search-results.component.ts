@@ -27,7 +27,7 @@ export class SearchResultsComponent implements OnInit {
   searchDomain: string;
 
   currentPage: number;
-  callerPaginationSearchResults = 'search-results-new';
+  callerPaginationSearchResults = 'search-results';
 
   userId: string;
   userIsLoggedIn = false;

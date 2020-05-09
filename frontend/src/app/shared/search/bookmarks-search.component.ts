@@ -69,7 +69,7 @@ export class BookmarksSearchComponent implements OnInit {
   ];
 
   currentPage: number;
-  callerPaginationSearchResults = 'search-results';
+  callerPaginationSearchResults = 'dead';
 
   constructor(private router: Router,
               private route: ActivatedRoute,

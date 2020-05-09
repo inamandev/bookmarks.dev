@@ -24,7 +24,7 @@ const routes: Routes = [
     loadChildren: () => import('app/codelet/codelet.module').then(m => m.CodeletModule)
   },
   {
-    path: 'search-results',
+    path: 'search',
     loadChildren: () => import('app/search-results/search-results.module').then(m => m.SearchResultsModule)
   },
   {

@@ -261,7 +261,7 @@ export class SearchbarComponent implements OnInit {
 
   triggerBookmarkSearch(searchText: string) {
     if (searchText.trim() !== '') {
-      this.router.navigate(['./search-results'],
+      this.router.navigate(['./search'],
         {
           queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage}
         }).then(() => {

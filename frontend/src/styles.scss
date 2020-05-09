@@ -368,4 +368,14 @@ label {
   margin-top: -0.5rem;
 }
 
+.main-body {
+  margin-top:5rem
+}
+@media (max-width: 680px) {
+  .main-body {
+    margin-top:7rem
+  }
+}
+
+
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
