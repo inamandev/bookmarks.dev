@@ -7,7 +7,6 @@ import {HowtoComponent} from './howto/howto.component';
 import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
 import {TermsOfServiceComponent} from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
-import { BookmarkletComponent } from './bookmarklets/bookmarklet.component';
 
 const publicBookmarksRoutes: Routes = [
   {
@@ -48,16 +47,12 @@ const publicBookmarksRoutes: Routes = [
     component: TagComponent
   },
   {
-    path: 'bookmarklets',
-    component: BookmarkletComponent
-  },
-  {
     path: 'about',
     component: AboutComponent
   },
   {
     path: 'howto',
-    component: HowtoComponent
+    loadChildren: () => import('app/public/howto/howto.module').then(m => m.HowtoModule)
   },
   {
     path: 'privacy-policy',

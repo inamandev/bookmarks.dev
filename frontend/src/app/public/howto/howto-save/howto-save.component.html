@@ -1,0 +1,87 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h2>Save bookmarks</h2>
+    <p class="lead">We've made it easy to save bookmarks:</p>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">The first option is with the help of <strong>bookmarklets</strong>.
+        Bookmarklets are little javascript links that live in the bookmarks toolbar of your browser.
+        Just drag one of the links bellow to your browser toolbar:
+        <ul>
+          <li>
+            <a
+              class="bookmarklet"
+              href="javascript:(function(){let l=location.href;if(document.getSelection){d=document.getSelection()}else{d=''};let t=document.title;let w,h;if(innerWidth>1500){w=1210}else{w=(innerWidth*80)/100}if(innerHeight>1500){h=1210}else{h=(innerHeight*90)/100};let features=`toolbar=no,width=${w},height=${h},top=0,left=0`;open('https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(l)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)+'&popup=true','Bookmarks.dev',features);})();">
+              <i class="fas fa-bookmark"></i> +Bookmarks.dev - popup
+            </a> - when clicked a popup to save the current URL is displayed [<em>recommended for
+            <strong>desktops</strong> and <strong>notebooks</strong> with good resolution</em>]
+          </li>
+          <li>
+            <a
+              href="javascript:(function(){q=location.href;if(document.getSelection){d=document.getSelection();}else{d='';};t=document.title;location.href='https://www.bookmarks.dev/personal/new?url='+encodeURIComponent(q)+'&desc='+encodeURIComponent(d)+'&title='+encodeURIComponent(t)})();">
+              <i class="fas fa-bookmark"></i> +Bookmarks.dev - go back
+            </a> - when clicked it redirects you to the <a href="https://www.bookmarks.dev/personal/new">New
+            Bookmark</a> form.
+            Once added you go back to the initial page [<em>recommended for <strong>phones</strong> or smaller
+            resolution devices</em>]
+          </li>
+        </ul>
+        <p class="note_normal">You can <strong>select the text on page</strong> that you want to be added to the
+          description of the bookmark
+          before you click the bookmarklet's link </p>
+      </li>
+      <li class="list-group-item">Save directly using the
+        <div class="btn-group tag-list mt-1 mr-2">
+          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
+             title="New Bookmark">
+            <i class="fa fa-plus"></i>
+            New
+          </a>
+          <button
+            type=" button"
+            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              routerLink="/personal/new"><i class="fa fa-bookmark"></i>
+              Bookmark
+            </a>
+            <a
+              class="dropdown-item"
+              routerLink="/my-codelets/new"><i class="fa fa-code"></i>
+              Codelet
+            </a>
+          </div>
+        </div>
+        button from the navigation menu
+      </li>
+      <li class="list-group-item">Use the <a
+        href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb">
+        <i class="fab fa-chrome"></i> Save to bookmarks.dev</a>
+        chrome extension for Chromium based browsers - same behaviour as the first bookmarklet
+      </li>
+    </ul>
+    <br>
+    <h3>Public & Private bookmarks</h3>
+    <p class="lead">When saving a bookmark you have the option to make it <strong>public</strong> - this won't be
+      available if you opt in for the <strong>all private modus</strong> (soon to be implemented).
+      Please share only dev related links that others might benefit from - <span
+        class="highlight"><strong>SPAM</strong> will not be tolerated and you risk having your account blocked </span>
+    </p>
+
+    <p class="note_normal">The public bookmarks are regularly published on Github
+      at <a href="https://github.com/CodepediaOrg/bookmarks#readme"> https://github.com/CodepediaOrg/bookmarks</a>
+    </p>
+
+    <p>You can easily differentiate between private and public bookmarks:</p>
+    <img src="./assets/img/public-vs-private-bookmarks.png" alt="Search bar example"
+         style="align-content: center; width: 100%; height: auto"/>
+    <hr/>
+
+  </div>
+</div>
