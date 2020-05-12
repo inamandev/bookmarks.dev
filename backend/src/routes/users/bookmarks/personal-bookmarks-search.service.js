@@ -33,10 +33,7 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text =
-      {
-        $search: nonSpecialSearchTerms.join(' ')
-      }
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -47,16 +44,18 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
       score: {$meta: "textScore"}
     }
   )
-  //.sort({createdAt: -1})
     .sort({score: {$meta: "textScore"}})
+    .skip( ( page - 1 ) * limit)
+    .limit(limit)
     .lean()
     .exec();
 
+/* TODO - remove
   for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
   const startPoint =   ( page - 1 ) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
+  bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
 
   return bookmarks;
 }
@@ -65,10 +64,8 @@ let getPersonalBookmarksForTagsAndTerms = async function (searchedTags, nonSpeci
 let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
 
   let filter = {userId: userId };
-  if(nonSpecialSearchTerms.length > 0) {
-    const termsJoined = nonSpecialSearchTerms.join(' ');
-    const termsQuery = escapeStringRegexp(termsJoined);
-    filter.$text = {$search: termsQuery}
+  if ( nonSpecialSearchTerms.length > 0 ) {
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -79,16 +76,18 @@ let getPersonalBookmarksForSearchedTerms = async function (nonSpecialSearchTerms
       score: {$meta: "textScore"}
     }
   )
-  //.sort({createdAt: -1}) //let's give it a try with text score
     .sort({score: {$meta: "textScore"}})
+    .skip( ( page - 1 ) * limit)
+    .limit(limit)
     .lean()
     .exec();
 
+/* TODO remove it
   for ( const term of nonSpecialSearchTerms ) {
     bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
   }
   const startPoint =  ( page - 1 ) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
+  bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
 
   return bookmarks;
 }

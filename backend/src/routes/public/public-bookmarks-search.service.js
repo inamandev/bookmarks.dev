@@ -1,5 +1,6 @@
 const Bookmark = require('../../model/bookmark');
-const escapeStringRegexp = require('escape-string-regexp');
+// TODO - remove
+//  const escapeStringRegexp = require('escape-string-regexp');
 const bookmarksSearchHelper = require('../../common/bookmarks-search.helper');
 
 let findPublicBookmarks = async function (query, page, limit, sort) {
@@ -47,10 +48,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text =
-      {
-        $search: nonSpecialSearchTerms.join(' ')
-      }
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -68,18 +66,22 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
     }
   )
     .sort(sortBy)
+    .skip((page - 1) * limit)
+    .limit(limit)
     .lean()
     .exec();
 
-  for ( const term of nonSpecialSearchTerms ) {
-    bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-  }
+  /* TODO - remove
+   for ( const term of nonSpecialSearchTerms ) {
+      bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
+    }
 
-  const startPoint = (page - 1) * limit;
-  bookmarks = bookmarks.slice(startPoint, startPoint + limit);
+    const startPoint = (page - 1) * limit;
+    bookmarks = bookmarks.slice(startPoint, startPoint + limit);*/
 
   return bookmarks;
 }
+
 
 let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, sort, specialSearchFilters) {
 
@@ -88,9 +90,7 @@ let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, 
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    const termsJoined = nonSpecialSearchTerms.join(' ');
-    const termsQuery = escapeStringRegexp(termsJoined);
-    filter.$text = {$search: termsQuery};
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -109,14 +109,18 @@ let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, 
     }
   )
     .sort(sortBy)
+    .skip((page - 1) * limit)
+    .limit(limit)
     .lean()
     .exec();
 
+  /* TODO remove
   for ( const term of nonSpecialSearchTerms ) {
-    bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
-  }
+      bookmarks = bookmarks.filter(bookmark => bookmarksSearchHelper.bookmarkContainsSearchedTerm(bookmark, term.trim()));
+    }
   const startPoint = (page - 1) * limit;
   bookmarks = bookmarks.slice(startPoint, startPoint + limit);
+*/
 
   return bookmarks;
 }
@@ -131,23 +135,6 @@ let getPublicBookmarksForSearchedTags = async function (searchedTags, page, limi
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
-
-  let bookmarks = await Bookmark.find(filter)
-    .sort({createdAt: -1})
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .lean()
-    .exec();
-
-  return bookmarks;
-}
-
-let getPublicBookmarksForUser = async function (limit, page, userId) {
-
-  let filter = {
-    public: true,
-    userId: userId
-  }
 
   let bookmarks = await Bookmark.find(filter)
     .sort({createdAt: -1})

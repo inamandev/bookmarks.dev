@@ -33,10 +33,7 @@ let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecia
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text =
-      {
-        $search: nonSpecialSearchTerms.join(' ')
-      }
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -47,7 +44,6 @@ let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecia
       score: {$meta: "textScore"}
     }
   )
-  //.sort({createdAt: -1})
     .sort({score: {$meta: "textScore"}})
     .skip( ( page - 1 ) * limit)
     .limit(limit)
@@ -61,10 +57,8 @@ let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecia
 let getPersonalCodeletsForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
 
   let filter = {userId: userId };
-  if(nonSpecialSearchTerms.length > 0) {
-    const termsJoined = nonSpecialSearchTerms.join(' ');
-    const termsQuery = escapeStringRegexp(termsJoined);
-    filter.$text = {$search: termsQuery}
+  if ( nonSpecialSearchTerms.length > 0 ) {
+    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
