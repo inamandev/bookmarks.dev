@@ -26,6 +26,7 @@ export class SearchResultsComponent implements OnInit {
 
   searchText: string; // holds the value in the search box
   searchDomain: string;
+  searchMode: string;
 
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
@@ -54,6 +55,7 @@ export class SearchResultsComponent implements OnInit {
   ngOnInit() {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || SearchDomain.PUBLIC_BOOKMARKS;
+    this.searchMode = this.route.snapshot.queryParamMap.get('mode');
     this.searchNotificationService.updateSearchBar({
       searchText: this.searchText,
       searchDomain: this.searchDomain
@@ -141,7 +143,8 @@ export class SearchResultsComponent implements OnInit {
           this.searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
-          this.userId);
+          this.userId,
+          this.searchMode);
         break;
       }
       case SearchDomain.MY_CODELETS : {
@@ -149,12 +152,17 @@ export class SearchResultsComponent implements OnInit {
           searchText,
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
-          this.userId);
+          this.userId,
+          this.searchMode);
         break;
       }
       case SearchDomain.PUBLIC_BOOKMARKS : {
         this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(
-          searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant'
+          searchText,
+          environment.PAGINATION_PAGE_SIZE,
+          this.currentPage,
+          'relevant',
+          this.searchMode
         );
         break;
       }

@@ -1,9 +1,8 @@
 const Codelet = require('../../../model/codelet');
-const escapeStringRegexp = require('escape-string-regexp');
 
 const bookmarksSearchHelper = require('../../../common/bookmarks-search.helper');
 
-let findPersonalCodelets = async function (query, page, limit, userId) {
+let findPersonalCodelets = async function (query, page, limit, userId, searchMode) {
   //split in text and tags
   const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
   let searchedTerms = searchedTermsAndTags.terms;
@@ -13,9 +12,9 @@ let findPersonalCodelets = async function (query, page, limit, userId) {
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPersonalCodeletsForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters);
+    bookmarks = await getPersonalCodeletsForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchMode);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPersonalCodeletsForSearchedTerms(nonSpecialSearchTerms, page, limit, userId, specialSearchFilters);
+    bookmarks = await getPersonalCodeletsForSearchedTerms(nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchMode);
   } else {
     bookmarks = await getPersonalCodeletsForSearchedTags(searchedTags, page, limit, userId, specialSearchFilters);
   }
@@ -23,7 +22,7 @@ let findPersonalCodelets = async function (query, page, limit, userId) {
   return bookmarks;
 }
 
-let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
+let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchMode) {
   let filter = {
     userId: userId,
     tags:
@@ -33,7 +32,11 @@ let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecia
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    if(searchMode === 'OR') {
+      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+    } else {
+      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    }
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
@@ -54,11 +57,15 @@ let getPersonalCodeletsForTagsAndTerms = async function (searchedTags, nonSpecia
 }
 
 
-let getPersonalCodeletsForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters) {
+let getPersonalCodeletsForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, userId, specialSearchFilters, searchMode) {
 
   let filter = {userId: userId };
   if ( nonSpecialSearchTerms.length > 0 ) {
-    filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    if(searchMode === 'OR') {
+      filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
+    } else {
+      filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
+    }
   }
 
   addSpecialSearchFiltersToMongoFilter(specialSearchFilters, filter);
