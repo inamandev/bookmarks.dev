@@ -15,6 +15,7 @@ import { UserDataStore } from '../core/user/userdata.store';
 import { UserData } from '../core/model/user-data';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { PaginationNotificationService } from '../core/pagination-notification.service';
+import { SearchDomain } from '../core/model/search-domain.enum';
 
 @Component({
   selector: 'app-search-results',
@@ -52,7 +53,7 @@ export class SearchResultsComponent implements OnInit {
 
   ngOnInit() {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
-    this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || 'public';
+    this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || SearchDomain.PUBLIC_BOOKMARKS;
     this.searchNotificationService.updateSearchBar({
       searchText: this.searchText,
       searchDomain: this.searchDomain
@@ -73,16 +74,16 @@ export class SearchResultsComponent implements OnInit {
         });
       } else {
         switch (this.searchDomain) {
-          case 'personal': {
+          case SearchDomain.MY_BOOKMARKS: {
             this.keycloakServiceWrapper.login();
             break;
           }
-          case 'my-codelets': {
+          case SearchDomain.MY_CODELETS: {
             this.keycloakServiceWrapper.login();
             break;
           }
-          case 'public': {
-            this.searchBookmarks(this.searchText, 'public');
+          case SearchDomain.PUBLIC_BOOKMARKS: {
+            this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
             break;
           }
         }
@@ -91,9 +92,9 @@ export class SearchResultsComponent implements OnInit {
     });
 
     this.searchNotificationService.searchTriggeredSource$.subscribe(searchData => {
-      if (searchData.searchDomain === 'personal') {
+      if (searchData.searchDomain === SearchDomain.MY_BOOKMARKS) {
         this.selectedTabIndex = 1;
-      } else if (searchData.searchDomain === 'my-codelets') {
+      } else if (searchData.searchDomain === SearchDomain.MY_CODELETS) {
         this.selectedTabIndex = 2;
       } else {
         this.selectedTabIndex = 0;
@@ -118,16 +119,16 @@ export class SearchResultsComponent implements OnInit {
   }
 
   private initSelectedTabIndex(searchDomain: string) {
-    if (searchDomain === 'personal') {
+    if (searchDomain === SearchDomain.MY_BOOKMARKS) {
       this.selectedTabIndex = 1;
-    } else if (searchDomain === 'my-codelets') {
+    } else if (searchDomain === SearchDomain.MY_CODELETS) {
       this.selectedTabIndex = 2;
     }
   }
 
   private searchPublicBookmarks_when_SearchText_but_No_SearchDomain() {
     if (this.searchText) {
-      this.searchBookmarks(this.searchText, 'public');
+      this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
     }
   }
 
@@ -135,7 +136,7 @@ export class SearchResultsComponent implements OnInit {
     this.searchDomain = searchDomain;
     this.searchText = searchText;
     switch (searchDomain) {
-      case 'personal' : {
+      case SearchDomain.MY_BOOKMARKS : {
         this.searchResults$ = this.personalBookmarksService.getFilteredPersonalBookmarks(
           this.searchText,
           environment.PAGINATION_PAGE_SIZE,
@@ -143,7 +144,7 @@ export class SearchResultsComponent implements OnInit {
           this.userId);
         break;
       }
-      case 'my-codelets' : {
+      case SearchDomain.MY_CODELETS : {
         this.searchResults$ = this.personalCodeletsService.getFilteredPersonalCodelets(
           searchText,
           environment.PAGINATION_PAGE_SIZE,
@@ -151,7 +152,7 @@ export class SearchResultsComponent implements OnInit {
           this.userId);
         break;
       }
-      case 'public' : {
+      case SearchDomain.PUBLIC_BOOKMARKS : {
         this.searchResults$ = this.publicBookmarksService.searchPublicBookmarks(
           searchText, environment.PAGINATION_PAGE_SIZE, this.currentPage, 'relevant'
         );
@@ -166,12 +167,12 @@ export class SearchResultsComponent implements OnInit {
       {
         relativeTo: this.route,
         queryParams: {
-          sd: 'my-codelets'
+          sd: SearchDomain.MY_CODELETS
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, 'my-codelets');
+    this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS);
   }
 
   private tryPublicBookmarks() {
@@ -181,30 +182,30 @@ export class SearchResultsComponent implements OnInit {
       {
         relativeTo: this.route,
         queryParams: {
-          sd: 'public',
+          sd: SearchDomain.PUBLIC_BOOKMARKS,
           page: '1'
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, 'public');
+    this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
   }
 
   private tryPersonalBookmarks() {
     this.selectedTabIndex = 1;
-    this.searchDomain = 'personal';
+    this.searchDomain = SearchDomain.MY_BOOKMARKS;
     this.currentPage = 1;
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
         queryParams: {
-          sd: 'personal',
+          sd: SearchDomain.MY_BOOKMARKS,
           page: '1'
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, 'personal');
+    this.searchBookmarks(this.searchText, SearchDomain.MY_BOOKMARKS);
   }
 
   tabSelectionChanged(event: MatTabChangeEvent) {

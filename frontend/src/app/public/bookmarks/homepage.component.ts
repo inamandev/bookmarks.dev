@@ -18,6 +18,7 @@ import { UserDataReadLaterStore } from '../../core/user/user-data-read-later-sto
 import { UserDataWatchedTagsStore } from '../../core/user/userdata.watched-tags.store';
 import { TagFollowingBaseComponent } from '../../shared/tag-following-base-component/tag-following-base.component';
 import { FeedStore } from '../../core/user/feed-store.service';
+import { SearchDomain } from '../../core/model/search-domain.enum';
 
 
 @Component({
@@ -255,7 +256,7 @@ export class HomepageComponent extends TagFollowingBaseComponent implements OnIn
   searchPublicBookmarksByTag(tag: string) {
     this.router.navigate(['./search'],
       {
-        queryParams: {q: '[' + tag + ']', sd: 'public', page: 1}
+        queryParams: {q: '[' + tag + ']', sd: SearchDomain.PUBLIC_BOOKMARKS, page: 1}
       });
   }
 }

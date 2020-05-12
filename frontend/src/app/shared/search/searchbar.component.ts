@@ -19,8 +19,9 @@ import { LoginRequiredDialogComponent } from '../login-required-dialog/login-req
 import { Codelet } from '../../core/model/codelet';
 import { PersonalCodeletsService } from '../../core/personal-codelets.service';
 import { SearchNotificationService } from '../../core/search-notification.service';
+import { SearchDomain } from '../../core/model/search-domain.enum';
 
-export interface SearchDomain {
+export interface SearchDomainLocal {
   value: string;
   viewValue: string;
 }
@@ -60,12 +61,12 @@ export class SearchbarComponent implements OnInit {
   showSearchResults = false;
   hover = false;
 
-  searchDomain = 'public';
+  searchDomain = SearchDomain.PUBLIC_BOOKMARKS.valueOf();
 
-  searchDomains: SearchDomain[] = [
-    {value: 'personal', viewValue: 'My bookmarks'},
-    {value: 'public', viewValue: 'Public bookmarks'},
-    {value: 'my-codelets', viewValue: 'My codelets'}
+  searchDomains: SearchDomainLocal[] = [
+    {value: SearchDomain.MY_BOOKMARKS, viewValue: 'My bookmarks'},
+    {value: SearchDomain.PUBLIC_BOOKMARKS, viewValue: 'Public bookmarks'},
+    {value: SearchDomain.MY_CODELETS, viewValue: 'My codelets'}
   ];
 
   currentPage: number;
@@ -178,8 +179,8 @@ export class SearchbarComponent implements OnInit {
   onSearchDomainChange(selectedSearchDomain) {
     this.setFilteredSearches$(selectedSearchDomain);
 
-    if ((selectedSearchDomain === 'personal' || selectedSearchDomain === 'my-codelets') && !this.userIsLoggedIn) {
-      this.searchDomain = 'public';
+    if ((selectedSearchDomain ===  SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_CODELETS) && !this.userIsLoggedIn) {
+      this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
       this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
     } else {
       this.searchDomain = selectedSearchDomain;
