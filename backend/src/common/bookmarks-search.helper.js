@@ -25,10 +25,7 @@ let splitSearchQuery = function (query) {
         tag += ' ';
       }
     } else if ( currentCharacter === '[' ) {
-      if ( isInsideTag ) {
-        tags.push(tag.trim());
-        tag = '';
-      } else {
+      if ( !isInsideTag ) {
         isInsideTag = true;
       }
     } else if ( currentCharacter === ']' ) {
