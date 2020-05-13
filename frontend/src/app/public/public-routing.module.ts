@@ -1,11 +1,10 @@
-import { RouterModule, Routes, UrlSegment } from '@angular/router';
-import {NgModule} from '@angular/core';
-import {TagComponent} from './tag/tag.component';
-import {AboutComponent} from './about/about.component';
-import {HomepageComponent} from './bookmarks/homepage.component';
-import {HowtoComponent} from './howto/howto.component';
-import {PrivacyPolicyComponent} from './privacy/privacy-policy.component';
-import {TermsOfServiceComponent} from './terms/terms-of-service.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { TagComponent } from './tag/tag.component';
+import { AboutComponent } from './about/about.component';
+import { HomepageComponent } from './bookmarks/homepage.component';
+import { PrivacyPolicyComponent } from './privacy/privacy-policy.component';
+import { TermsOfServiceComponent } from './terms/terms-of-service.component';
 import { UserPublicProfileComponent } from './user-public-profile/user-public-profile.component';
 
 const publicBookmarksRoutes: Routes = [

@@ -3,7 +3,7 @@ const Bookmark = require('../../model/bookmark');
 //  const escapeStringRegexp = require('escape-string-regexp');
 const bookmarksSearchHelper = require('../../common/bookmarks-search.helper');
 
-let findPublicBookmarks = async function (query, page, limit, sort, searchMode) {
+let findPublicBookmarks = async function (query, page, limit, sort, searchInclude) {
   //split in text and tags
   const searchedTermsAndTags = bookmarksSearchHelper.splitSearchQuery(query);
   const searchedTerms = searchedTermsAndTags.terms;
@@ -13,9 +13,9 @@ let findPublicBookmarks = async function (query, page, limit, sort, searchMode) 
   const {specialSearchFilters, nonSpecialSearchTerms} = bookmarksSearchHelper.extractSpecialSearchTerms(searchedTerms);
 
   if ( searchedTerms.length > 0 && searchedTags.length > 0 ) {
-    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchMode);
+    bookmarks = await getPublicBookmarksForTagsAndTerms(searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
   } else if ( searchedTerms.length > 0 ) {
-    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchMode);
+    bookmarks = await getPublicBookmarksForSearchedTerms(nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude);
   } else if ( searchedTags.length > 0 ) {
     bookmarks = await getPublicBookmarksForSearchedTags(searchedTags, page, limit, specialSearchFilters);
   }
@@ -38,7 +38,7 @@ let addSpecialSearchFiltersToMongoFilter = function (specialSearchFilters, filte
 };
 
 
-let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchMode) {
+let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
   let filter = {
     public: true,
     tags:
@@ -48,7 +48,7 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    if(searchMode === 'OR') {
+    if(searchInclude === 'any') {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
       filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};
@@ -86,14 +86,14 @@ let getPublicBookmarksForTagsAndTerms = async function (searchedTags, nonSpecial
 }
 
 
-let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchMode) {
+let getPublicBookmarksForSearchedTerms = async function (nonSpecialSearchTerms, page, limit, sort, specialSearchFilters, searchInclude) {
 
   let filter = {
     public: true
   }
 
   if ( nonSpecialSearchTerms.length > 0 ) {
-    if(searchMode === 'OR') {
+    if(searchInclude === 'any') {
       filter.$text = {$search: nonSpecialSearchTerms.join(' ')}
     } else {
       filter.$text = {$search: bookmarksSearchHelper.generateFullSearchText(nonSpecialSearchTerms)};

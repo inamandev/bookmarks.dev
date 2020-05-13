@@ -24,12 +24,12 @@ export class PersonalBookmarksService {
       .pipe(shareReplay(1));
   }
 
-  getFilteredPersonalBookmarks(searchText: string, limit: number, page: number, userId: string, mode: string): Observable<Bookmark[]> {
+  getFilteredPersonalBookmarks(searchText: string, limit: number, page: number, userId: string, include: string): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
       .set('page', page.toString())
       .set('limit', limit.toString())
-      .set('mode', mode);
+      .set('include', include);
     return this.httpClient.get<Bookmark[]>(`${this.personalBookmarksApiBaseUrl}/${userId}/bookmarks`,
       {params: params})
       .pipe(shareReplay(1));

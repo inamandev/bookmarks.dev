@@ -24,13 +24,13 @@ export class PublicBookmarksService {
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params});
   }
 
-  searchPublicBookmarks(searchText: string, limit: number, page: number, sort: string, mode: string): Observable<Bookmark[]> {
+  searchPublicBookmarks(searchText: string, limit: number, page: number, sort: string, include: string): Observable<Bookmark[]> {
     const params = new HttpParams()
       .set('q', searchText)
       .set('page', page.toString())
       .set('sort', sort)
       .set('limit', limit.toString())
-      .set('mode', mode);
+      .set('include', include);
     return this.httpClient.get<Bookmark[]>(this.publicBookmarksApiBaseUrl, {params: params})
       .pipe(shareReplay(1));
   }

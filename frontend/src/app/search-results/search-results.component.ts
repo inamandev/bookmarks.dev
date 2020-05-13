@@ -26,7 +26,6 @@ export class SearchResultsComponent implements OnInit {
 
   searchText: string; // holds the value in the search box
   searchDomain: string;
-  searchMode: string;
 
   currentPage: number;
   callerPaginationSearchResults = 'search-results';
@@ -38,6 +37,7 @@ export class SearchResultsComponent implements OnInit {
   private userData$: Observable<UserData>;
 
   selectedTabIndex = 0; // default search in public bookmarks
+  private searchInclude: string;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -55,7 +55,7 @@ export class SearchResultsComponent implements OnInit {
   ngOnInit() {
     this.searchText = this.route.snapshot.queryParamMap.get('q');
     this.searchDomain = this.route.snapshot.queryParamMap.get('sd') || SearchDomain.PUBLIC_BOOKMARKS;
-    this.searchMode = this.route.snapshot.queryParamMap.get('mode');
+    this.searchInclude = this.route.snapshot.queryParamMap.get('include') || 'all';
     this.searchNotificationService.updateSearchBar({
       searchText: this.searchText,
       searchDomain: this.searchDomain
@@ -72,7 +72,7 @@ export class SearchResultsComponent implements OnInit {
           this.userData$ = this.userDataStore.getUserData$();
           this.userId = userInfo.sub;
 
-          this.searchBookmarks(this.searchText, this.searchDomain);
+          this.searchBookmarks(this.searchText, this.searchDomain, this.searchInclude);
         });
       } else {
         switch (this.searchDomain) {
@@ -85,7 +85,7 @@ export class SearchResultsComponent implements OnInit {
             break;
           }
           case SearchDomain.PUBLIC_BOOKMARKS: {
-            this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
+            this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, 'all');
             break;
           }
         }
@@ -101,7 +101,7 @@ export class SearchResultsComponent implements OnInit {
       } else {
         this.selectedTabIndex = 0;
       }
-      this.searchBookmarks(searchData.searchText, searchData.searchDomain);
+      this.searchBookmarks(searchData.searchText, searchData.searchDomain, 'all');
     });
   }
 
@@ -115,7 +115,7 @@ export class SearchResultsComponent implements OnInit {
     this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
       if (paginationAction.caller === this.callerPaginationSearchResults) {
         this.currentPage = paginationAction.page;
-        this.searchBookmarks(this.searchText, this.searchDomain);
+        this.searchBookmarks(this.searchText, this.searchDomain, 'all');
       }
     });
   }
@@ -130,11 +130,11 @@ export class SearchResultsComponent implements OnInit {
 
   private searchPublicBookmarks_when_SearchText_but_No_SearchDomain() {
     if (this.searchText) {
-      this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
+      this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, 'all');
     }
   }
 
-  private searchBookmarks(searchText: string, searchDomain: string) {
+  private searchBookmarks(searchText: string, searchDomain: string, searchInclude: string) {
     this.searchDomain = searchDomain;
     this.searchText = searchText;
     switch (searchDomain) {
@@ -144,7 +144,7 @@ export class SearchResultsComponent implements OnInit {
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
           this.userId,
-          this.searchMode);
+          searchInclude);
         break;
       }
       case SearchDomain.MY_CODELETS : {
@@ -153,7 +153,7 @@ export class SearchResultsComponent implements OnInit {
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
           this.userId,
-          this.searchMode);
+          searchInclude);
         break;
       }
       case SearchDomain.PUBLIC_BOOKMARKS : {
@@ -162,73 +162,80 @@ export class SearchResultsComponent implements OnInit {
           environment.PAGINATION_PAGE_SIZE,
           this.currentPage,
           'relevant',
-          this.searchMode
+          searchInclude
         );
         break;
       }
     }
   }
 
-  private tryMyCodelets() {
+  private tryMyCodelets(searchInclude: string) {
     this.selectedTabIndex = 2;
+    this.searchInclude = searchInclude;
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
         queryParams: {
-          sd: SearchDomain.MY_CODELETS
+          sd: SearchDomain.MY_CODELETS,
+          include: searchInclude
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS);
+    this.searchBookmarks(this.searchText, SearchDomain.MY_CODELETS, searchInclude);
   }
 
-  private tryPublicBookmarks() {
+  private tryPublicBookmarks(searchInclude: string) {
     this.selectedTabIndex = 0;
     this.currentPage = 1;
+    this.searchInclude = searchInclude;
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
         queryParams: {
           sd: SearchDomain.PUBLIC_BOOKMARKS,
-          page: '1'
+          page: '1',
+          include: searchInclude
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS);
+    this.searchBookmarks(this.searchText, SearchDomain.PUBLIC_BOOKMARKS, searchInclude);
   }
 
-  private tryPersonalBookmarks() {
+  private tryPersonalBookmarks(searchInclude) {
     this.selectedTabIndex = 1;
     this.searchDomain = SearchDomain.MY_BOOKMARKS;
     this.currentPage = 1;
+    this.searchInclude = searchInclude;
     this.router.navigate(['.'],
       {
         relativeTo: this.route,
         queryParams: {
           sd: SearchDomain.MY_BOOKMARKS,
-          page: '1'
+          page: '1',
+          include: searchInclude
         },
         queryParamsHandling: 'merge'
       }
     );
-    this.searchBookmarks(this.searchText, SearchDomain.MY_BOOKMARKS);
+    this.searchBookmarks(this.searchText, SearchDomain.MY_BOOKMARKS, searchInclude);
   }
+
 
   tabSelectionChanged(event: MatTabChangeEvent) {
     this.selectedTabIndex = event.index;
     switch (this.selectedTabIndex) {
       case 0 : {
-        this.tryPublicBookmarks();
+        this.tryPublicBookmarks('all');
         break;
       }
       case 1 : {
-        this.tryPersonalBookmarks();
+        this.tryPersonalBookmarks('all');
         break;
       }
       case 2 : {
-        this.tryMyCodelets();
+        this.tryMyCodelets('all');
         break;
       }
     }

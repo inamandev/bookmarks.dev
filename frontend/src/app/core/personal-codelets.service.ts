@@ -61,12 +61,12 @@ export class PersonalCodeletsService {
   /*
    TODO finish this...
    */
-  getFilteredPersonalCodelets(searchText: string, limit: number, page: number, userId: string, mode: string) {
+  getFilteredPersonalCodelets(searchText: string, limit: number, page: number, userId: string, include: string) {
     const params = new HttpParams()
       .set('q', searchText)
       .set('page', page.toString())
       .set('limit', limit.toString())
-      .set('mode', mode);
+      .set('include', include);
 
     return this.httpClient.get<Codelet[]>(`${this.personalCodeletsApiBaseUrl}/${userId}/codelets`,
       {params: params})

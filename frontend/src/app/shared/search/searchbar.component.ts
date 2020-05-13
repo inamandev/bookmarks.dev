@@ -264,7 +264,7 @@ export class SearchbarComponent implements OnInit {
     if (searchText.trim() !== '') {
       this.router.navigate(['./search'],
         {
-          queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage}
+          queryParams: {q: searchText, sd: this.searchDomain, page: this.currentPage, include: 'all'}
         }).then(() => {
         this.searchNotificationService.triggerSearch(
           {
