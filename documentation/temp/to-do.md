@@ -1,4 +1,3 @@
-* remove old search component
 * remove to-dos (mostly commented code)
 * redo about pages (split how to now that's in menu)
 * add + to searching and exact phrase

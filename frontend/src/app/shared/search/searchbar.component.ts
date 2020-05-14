@@ -123,7 +123,10 @@ export class SearchbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.keycloakService.isLoggedIn().then(isLoggedIn => {
-      this.userIsLoggedIn = true;
+      if (isLoggedIn) {
+        this.userIsLoggedIn = true;
+        this.searchDomain = SearchDomain.MY_BOOKMARKS;
+      }
     });
 
     this.searchNotificationService.searchTriggeredFromNavbar$.subscribe(searchData => {
@@ -131,32 +134,12 @@ export class SearchbarComponent implements OnInit {
       this.searchControl.setValue(searchData.searchText);
     });
 
-    // TODO - remove this
     this.watchSearchBoxValueChanges();
-
-    /* TODO move this to search-results page
-      const page = this.route.snapshot.queryParamMap.get('page');
-        if (page) {
-          this.currentPage = parseInt(page, 0);
-        } else {
-          this.currentPage = 1;
-        }
-
-        this.paginationNotificationService.pageNavigationClicked$.subscribe(paginationAction => {
-          if (paginationAction.caller === this.callerPaginationSearchResults) {
-            this.currentPage = paginationAction.page;
-            this.triggerBookmarkSearch(this.searchBoxText);
-          }
-        })
-        */
-
   }
 
   private watchSearchBoxValueChanges() {
     this.searchControl.valueChanges.subscribe(val => {
       this.searchBoxText = val;
-      // TODO remove this
-      // this.syncQueryParamsWithSearchBox();
     });
   }
 
@@ -179,13 +162,11 @@ export class SearchbarComponent implements OnInit {
   onSearchDomainChange(selectedSearchDomain) {
     this.setFilteredSearches$(selectedSearchDomain);
 
-    if ((selectedSearchDomain ===  SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_CODELETS) && !this.userIsLoggedIn) {
+    if ((selectedSearchDomain === SearchDomain.MY_BOOKMARKS || selectedSearchDomain === SearchDomain.MY_CODELETS) && !this.userIsLoggedIn) {
       this.searchDomain = SearchDomain.PUBLIC_BOOKMARKS;
       this.showLoginRequiredDialog('You need to be logged in to search in your personal bookmarks');
     } else {
       this.searchDomain = selectedSearchDomain;
-      // TODO - remove next line
-      // this.syncQueryParamsWithSearchBox();
       if (this.searchBoxText && this.searchBoxText !== '') {
         this.triggerBookmarkSearch(this.searchBoxText);
       }
@@ -257,7 +238,6 @@ export class SearchbarComponent implements OnInit {
   searchBookmarksFromSearchBox(searchText: string) {
     this.currentPage = 1;
     this.triggerBookmarkSearch(searchText);
-    // this.syncQueryParamsWithSearchBox();
   }
 
   triggerBookmarkSearch(searchText: string) {
@@ -273,30 +253,7 @@ export class SearchbarComponent implements OnInit {
           });
       });
     }
-
   }
-
-  /* TODO - remove this
-    syncQueryParamsWithSearchBox() {
-      if (this.searchBoxText) {
-        this.router.navigate(['.'],
-          {
-            relativeTo: this.route,
-            queryParams: {q: this.searchBoxText, sd: this.searchDomain, page: this.currentPage},
-            queryParamsHandling: 'merge'
-          }
-        );
-      } else {
-        this.searchTextCleared.emit(true);
-        this.router.navigate(['./'],
-          {
-            relativeTo: this.route,
-            queryParams: {q: null, sd: null, page: null},
-            queryParamsHandling: 'merge'
-          }
-        );
-      }
-    }*/
 
   clearSearchBoxText() {
     this.searchControl.patchValue('');
