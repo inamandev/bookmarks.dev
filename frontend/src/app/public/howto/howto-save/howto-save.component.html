@@ -29,36 +29,22 @@
           description of the bookmark
           before you click the bookmarklet's link </p>
       </li>
-      <li class="list-group-item">Save directly using the
-        <div class="btn-group tag-list mt-1 mr-2">
-          <a class="btn btn-primary btn-sm" routerLink="/personal/new"
-             title="New Bookmark">
-            <i class="fa fa-plus"></i>
-            New
-          </a>
-          <button
-            type=" button"
-            class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span class="sr-only">Toggle Dropdown</span>
-          </button>
-          <div class="dropdown-menu">
-            <a
-              class="dropdown-item"
-              routerLink="/personal/new"><i class="fa fa-bookmark"></i>
-              Bookmark
-            </a>
-            <a
-              class="dropdown-item"
-              routerLink="/my-codelets/new"><i class="fa fa-code"></i>
-              Codelet
-            </a>
+      <li class="list-group-item">
+        <div style="display: flex; align-items: center">
+          <div>Save directly by selecting the <strong><i class="fa fa-bookmark"></i> Bookmark</strong> option in the
+            navigation menu:
+          </div>
+          <div class="dropdown mt-1 ml-2">
+            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-lg fa-plus"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" routerLink="/personal/new"><i class="fa fa-bookmark"></i> Bookmark</a>
+              <a class="dropdown-item" routerLink="/my-codelets/new"><i class="fa fa-code"></i> Codelet</a>
+            </div>
           </div>
         </div>
-        button from the navigation menu
       </li>
       <li class="list-group-item">Use the <a
         href="https://chrome.google.com/webstore/detail/save-url-to-bookmarksdev/diofdblfhjbpgackifolmboaiccmebjb">
