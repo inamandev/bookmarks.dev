@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { KeycloakServiceWrapper } from '../../../core/keycloak-service-wrapper.service';
 
 @Component({
   selector: 'app-howto-get-started',
@@ -10,6 +11,14 @@ export class HowtoGetStartedComponent implements OnInit {
 
   environment = environment;
 
-  ngOnInit() {}
+  constructor(private keycloakServiceWrapper: KeycloakServiceWrapper) {
 
+  }
+
+  ngOnInit() {
+  }
+
+  login() {
+    this.keycloakServiceWrapper.login();
+  }
 }

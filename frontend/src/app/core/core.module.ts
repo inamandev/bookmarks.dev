@@ -26,6 +26,7 @@ import { FeedStore } from './user/feed-store.service';
 import { PersonalCodeletsService } from './personal-codelets.service';
 import { MarkdownService } from './markdown/markdown.service';
 import { SearchNotificationService } from './search-notification.service';
+import { StackoverflowHelper } from './stackoverflow.helper';
 
 
 /**
@@ -69,7 +70,8 @@ import { SearchNotificationService } from './search-notification.service';
     LoaderService,
     KeycloakServiceWrapper,
     MarkdownService,
-    SearchNotificationService
+    SearchNotificationService,
+    StackoverflowHelper
   ]
 })
 export class CoreModule {

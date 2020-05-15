@@ -1,17 +1,33 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h2>Getting started</h2>
-    <p class="lead">Bookmarks.dev is a bookmark manager created and designed with Developers & Co in mind. Take a look
-      at our <a href="{{environment.HOST}}/about">About</a> page for more details.
+    <h2>Get started</h2>
+    <p class="lead">Bookmarks.dev is a bookmark manager created and designed for Developers & Co. Find out more
+      at our <a href="{{environment.HOST}}/about">About</a> page.
     <p>
-      Create an <a target="_blank" href="{{environment.keycloak.url}}/realms/bookmarks/account/">Account</a> first.
-      You will be taken to the <strong>Login/Registration</strong> form, where you can choose to connect via <strong>email
-      and password</strong>, or
-      via one of the many supported identity providers (<i class="fab fa-github"></i> Github, <i
-      class="fab fa-google"></i> Google,
-      <i class="fab fa-twitter"></i> Twitter, <i class="fab fa-stack-overflow"></i> StackOverflow, <i
-      class="fab fa-linkedin"></i> LinkedIn
-      or <i class="fab fa-facebook"></i> Facebook). Choose an <strong>username</strong>,
-      <a href="{{environment.HOST}}/personal/new"><strong>add your first bookmark</strong></a> and you are good to go.
+      Create an <strong><a type="button" title="Go To Login/Registration Form" (click)="login()"> account</a></strong>
+      and
+      <strong><a routerLink="/howto/save">save</a></strong> your first bookmark or <a routerLink="/howto/codelets">codelet</a> .
+      You can choose to connect via <strong>email/username and password</strong>, or
+      via one of the many identity providers supported
+    <ul>
+      <li>
+        <i class="fab fa-github"></i> Github
+      </li>
+      <li>
+        <i class="fab fa-google"></i> Google
+      </li>
+      <li>
+        <i class="fab fa-twitter"></i> Twitter
+      </li>
+      <li>
+        <i class="fab fa-stack-overflow"></i> StackOverflow
+      </li>
+      <li>
+        <i class="fab fa-linkedin"></i> LinkedIn
+      </li>
+      <li>
+        <i class="fab fa-facebook"></i> Facebook
+      </li>
+    </ul>
   </div>
 </div>
